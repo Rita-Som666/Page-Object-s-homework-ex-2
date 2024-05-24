@@ -3,26 +3,21 @@ plugins {
 
     id "io.freefair.lombok" version "8.6"
     id 'idea'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 group 'ru.netology'
 version '1.0-SNAPSHOT'
-
 sourceCompatibility = 11
-
 // кодировка файлов (если используете русский язык в файлах)
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
-
 repositories {
     mavenCentral()
 }
-
-
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
-
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 
@@ -34,32 +29,10 @@ dependencies {
     // при реализации проекте с использованием Selenium вместо библиотеки com.codeborne:selenide подключаются
     // org.seleniumhq.selenium:selenium-java и io.github.bonigarcia:webdrivermanager
     // testImplementation 'org.seleniumhq.selenium:selenium-java:4.18.1'
-    testImplementation 'io.cucumber:cucumber-java:7.11.0'
-    testImplementation 'io.cucumber:cucumber-junit:7.11.0'
-    testImplementation 'io.cucumber:cucumber-spring:7.11.0'
+    testImplementation 'io.cucumber:cucumber-java:7.1.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.1.0'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.7.0'
     testImplementation 'org.slf4j:slf4j-simple:1.7.32'
     implementation 'ch.qos.logback:logback-classic:1.2.6'
     //testImplementation 'com.codeborne:selenide:6.17.2'
-}
-
-
-test {
-    useJUnitPlatform()
-    // в тестах, вызывая `gradlew test -Dselenide.headless=true` будем передавать этот параметр в JVM (где его подтянет Selenide)
-    // свойство selenide.headless используется в проектах на основе Selenide для передачи значения параметра в JVM
-    systemProperty 'selenide.headless', System.getProperty('selenide.headless')
-    // свойство chromeoptions.prefs используется для задания настроек браузера в проектах на основе Selenide, выключаем менеджер паролей
-    systemProperty 'chromeoptions.prefs', System.getProperty('chromeoptions.prefs', "profile.password_manager_leak_detection=false")
-
-    task cucumber() {
-        dependsOn assemble, compileTestJava
-        doLast {
-            javaexec {
-                main = "io.cucumber.core.cli.Main"
-                classpath = sourceSets.test.runtimeClasspath
-                args = ['--plugin', 'pretty', '--glue', 'steps', 'src/test/resources/features']
-            }
-        }
-    }
 }
